@@ -1,0 +1,19 @@
+{
+  "name": "ljsoned",
+  "version": "1.0.0",
+  "description": "a json file editor and app platform",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/himanss/ljsoned.git"
+  },
+  "author": "himanss",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/himanss/ljsoned/issues"
+  },
+  "homepage": "https://github.com/himanss/ljsoned#readme"
+}
