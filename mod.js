@@ -240,11 +240,3 @@ vmGlobal.print = function(...data) {
 vmGlobal.pathToString = path=>exports.fileJoin(path)
 
 //vmGlobal.ask
-
-
-
-//fsroot.load({"jsonic::trusted":true,"jsonic::onLoad":"global.l = (this.value);",arr:[],b:{value:"lol"}});
-
-
-
-//

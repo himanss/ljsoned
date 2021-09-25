@@ -9,8 +9,8 @@ const main = require('./mod.js');
 if(!fs.existsSync(file)){
   console.error("that file does not exist: "+file);
   console.error(`
-    to edit file             : node jsonic/main.js existingJsonFile.json
-    to make file from script : node jsonic/main.js constructor.js
+    to edit file             : node ljsoned/main.js existingJsonFile.json
+    to make file from script : node ljsoned/main.js constructor.js
   `);
   global.noSave = true
   process.exit(1)
@@ -23,7 +23,7 @@ if(!fs.existsSync(file)){
 
 let ext = path.extname(file)
 if(ext == ".js"){
-  main.fsroot.load({"jsonic::trusted":true,"jsonic::onInit":fs.readFileSync(file,'utf8')})
+  main.fsroot.load({"ljsoned::trusted":true,"ljsoned::onInit":fs.readFileSync(file,'utf8')})
   file = file+".json"
 }else if(ext == ".json"){
   main.fsroot.load(JSON.parse(fs.readFileSync(file,'utf8')))
@@ -48,7 +48,7 @@ if(ext == ".js"){
     if(rtn !== undefined)console.log(rtn);
     let fgReset = "\x1b[0m"
     let fgGreen = "\x1b[32m"
-    rl.question(`jsonic${fgGreen}${main.fileJoin(main.cwd)}${fgReset}> `,ans=>{
+    rl.question(`ljsoned${fgGreen}${main.fileJoin(main.cwd)}${fgReset}> `,ans=>{
       try {
         main.cliDo(ans,prompt)
       } catch (e) {

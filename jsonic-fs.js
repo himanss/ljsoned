@@ -1,4 +1,4 @@
-let stoTag = "jsonic::"
+let stoTag = "ljsoned::"
 
 const util = require('util');
 

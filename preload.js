@@ -44,6 +44,14 @@ func("get path",(done,cmd,path)=>{
   let l = file(path)
   done(l ? l.preview : null)
 })
+func("dump path",(done,cmd,path)=>{
+  let l = file(path)
+  done(l ? l.value : null)
+})
+func("stod path",(done,cmd,path)=>{ //storage dump
+  let l = file(path)
+  done(l ? l.storage : null)
+})
 func("ls path",(done,cmd,path)=>{
   let l = file((path))
   done(l ? l.list.map(m=>m.name) : null)
@@ -57,4 +65,4 @@ func("echopath path",(done,cmd,path)=>{
   print(pathResolve(path))
   done()
 })
-print("jsonic v1.0");
+print("ljsoned v1.0");
