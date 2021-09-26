@@ -1,6 +1,20 @@
-func("who",(done,cmd,path)=>{
-  ask("who are you?","", ans=>done("you are "+ans) )
-})
+
+
+
+{ //helpsys
+  let htxt;htxt = function(cmd,help) {
+    htxt[cmd] = help
+  }
+  global.helptxt = htxt
+  func("help word",(done,cmd,shownCmd)=>{
+    if(!shownCmd)return done(print("try: help <command>;\nto list all commands try: cmds"));
+    print(htxt[shownCmd] || "no help for this command")
+    done()
+  })
+}
+
+
+helptxt("set","sets the value of a node")
 func("set path value",(done,cmd,path,...value)=>{
   //let s2 = path.pop()
   let val = [...value].join(" ")
@@ -56,13 +70,16 @@ func("ls path",(done,cmd,path)=>{
   let l = file((path))
   done(l ? l.list.map(m=>m.name) : null)
 })
-func("unset path",(done,cmd,path)=>{
+func("rm path",(done,cmd,path)=>{
   let l = file(path)
   l.value = null
   done()
 })
-func("echopath path",(done,cmd,path)=>{
+func("resolve-path path",(done,cmd,path)=>{
   print(pathResolve(path))
   done()
 })
+
+
+
 print("ljsoned v1.0");
