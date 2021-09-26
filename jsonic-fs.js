@@ -153,6 +153,32 @@ class FsNode {
           },
           get name(){
             return privateFace.parentId
+          },
+          get exec(){
+
+            if(!privateFace.hasValue)privateFace.load({});
+            if(!privateFace.storage)throw new Error("only objects can contain code");
+
+            if(privateFace.functionCache)
+            return privateFace.functionCache;
+
+            let func = publicFace.storage["function"]
+            if(!func) func = "";
+            func = privateFace.createArbitraryFn("...args",func).bind(this)
+            privateFace.functionCache = func;
+            return func;
+          },
+          set exec(v){
+            var entire = v.toString(); // this part may fail!
+            var body = entire;
+            if(typeof v == "function")body = entire.substring(entire.indexOf("{") + 1, entire.lastIndexOf("}"));
+
+            if(!privateFace.hasValue)privateFace.load({});
+            if(!privateFace.storage)throw new Error("only objects can contain code");
+
+            privateFace.functionCache = privateFace.createArbitraryFn("...args",body).bind(this)
+            publicFace.storage["function"] = body
+
           }
 
 
