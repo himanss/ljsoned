@@ -1,4 +1,7 @@
 
+charms.noAutosave = show=>autosave ? null : show("warn","nosave")
+charms.add(charms.noAutosave)
+
 
 
 { //helpsys
@@ -115,6 +118,36 @@ func("jsh",(done,cmd,path)=>{
   prompt()
 })
 
+func("debug",done=>{
 
+  func("charm word value",(done,cmd,color,...text)=>{
+    text = text.join(" ")
+    charms.add( show=> show(color,text)  )
+    done()
+  })
+
+  func("killer",(done,cmd)=>{
+    let killer;
+    killer = show=>{
+      show("warn","(we are waching you)")
+      charms.remove(killer)
+    }
+    charms.add(killer)
+    done()
+  })
+
+  func("evfire word",(done,cmd,ev,...args)=>{
+    event(ev).fire(...args)
+    done()
+  })
+
+  func("evawait word",(done,cmd,ev)=>{
+      event(ev).addListener(print)
+      done()
+  })
+
+  print("loaded debug commands")
+  done()
+})
 
 print("ljsoned v1.0");

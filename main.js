@@ -6,23 +6,58 @@ const fs = require('fs');
 const path = require('path');
 const main = require('./mod.js');
 
-{
-	var charms = new Set()
-	var charmsPublic = {}
-	main.vmGlobal.charms = charmsPublic
-	charmsPublic.add = function(func){
-		return charms.add(func)
-	}
-	charmsPublic.remove = function(func){
-		return charms.delete(func)
-	}
-}
 
-let color = {warn:"\x1b[0;33m",accent:"\x1b[32m",reset:"\x1b[0m"}
+//{
+	var event = {}
+	class Event extends Set{
+		constructor(name){
+			super();
+			event[name] = this
+			this.public = {
+				addListener:this.addListener.bind(this),
+				removeListener:this.removeListener.bind(this),
+
+				add:this.addListener.bind(this),
+				remove:this.removeListener.bind(this),
+
+				fire:this.fire.bind(this)
+			}
+		}
+		addListener(func){
+			this.add(func)
+		}
+		removeListener(func){
+			this.delete	(func)
+		}
+		fire(...args){
+			this.forEach((item, i) => {
+				item(...args)
+			});
+		}
+	}
+	function eventPublic(e){
+		if(event[e])return event[e].public;
+		else return new Event(e).public;
+	}
+	main.vmGlobal.event = eventPublic
+//}
+
+
+let charm = new Event("charmSystem")
+main.vmGlobal.charms = charm.public
+
+let color = {warn:"\x1b[0;33m",accent:"\x1b[32m",reset:"\x1b[0m",info:"\x1b[0;34m"}
 main.vmGlobal.color = Object.assign({},color) //clone of color
 
 
 let doesSave = ()=>!(global.noSave || main.vmGlobal.noSave)
+
+Object.defineProperty(main.vmGlobal,"autosave",{
+	get:doesSave,
+	set(v){
+		main.vmGlobal.noSave = !v
+	}
+})
 
 if(!fs.existsSync(file)){
   console.error("that file does not exist: "+file);
@@ -74,7 +109,11 @@ if(ext == ".js"){
 
   function prompt(rtn) {
     if(rtn !== undefined)console.log(rtn);
-    rl.question(`ljsoned${doesSave() ? "" : ` ${color.warn}(nosave)`} ${color.accent}${main.fileJoin(main.cwd)}${color.reset}> `,ans=>{
+		let charms = []
+		charm.fire((colorOf,text)=>{
+			charms.push(" "+(color[colorOf] || color.reset)+"("+text+")")
+		})
+    rl.question(`ljsoned${charms.join("")} ${color.accent}${main.fileJoin(main.cwd)}${color.reset}> `,ans=>{
       try {
         main.cliDo(ans,prompt)
       } catch (e) {
