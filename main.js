@@ -6,6 +6,18 @@ const fs = require('fs');
 const path = require('path');
 const main = require('./mod.js');
 
+{
+	var charms = new Set()
+	var charmsPublic = {}
+	main.vmGlobal.charms = charmsPublic
+	charmsPublic.add = function(func){
+		return charms.add(func)
+	}
+	charmsPublic.remove = function(func){
+		return charms.delete(func)
+	}
+}
+
 let color = {warn:"\x1b[0;33m",accent:"\x1b[32m",reset:"\x1b[0m"}
 main.vmGlobal.color = Object.assign({},color) //clone of color
 
