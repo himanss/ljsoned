@@ -33,7 +33,26 @@ func("cd path",(done,cmd,path)=>{
 })
 func("nosave",(done,cmd,path)=>{
   global.noSave = true
+  print("your changes will not be saved")
   done()
+})
+func("dosave",(done,cmd,path)=>{
+  global.noSave = false
+  print("your changes will be saved")
+  done()
+})
+func("save",(done,cmd,path)=>{
+  global.noSave = true
+  save()
+  print("saved")
+  done()
+})
+
+func("exit",(done,cmd,path)=>{
+  global.noSave = true
+  print("goodbye! ")
+  done()
+  exit()
 })
 
 func("json path",(done,cmd,path)=>{
@@ -78,6 +97,22 @@ func("rm path",(done,cmd,path)=>{
 func("resolve-path path",(done,cmd,path)=>{
   print(pathResolve(path))
   done()
+})
+
+func("jsh",(done,cmd,path)=>{
+  function prompt() {
+    ask("jsh>","",ans=>{
+      ans = ans.trim()
+      if(ans == "exit")return done();
+      try {
+        print(eval(ans))
+      } catch (e) {
+        print(e)
+      }
+      prompt()
+    })
+  }
+  prompt()
 })
 
 
