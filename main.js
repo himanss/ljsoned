@@ -6,6 +6,12 @@ const fs = require('fs');
 const path = require('path');
 const main = require('./mod.js');
 
+let color = {warn:"\x1b[0;33m",accent:"\x1b[32m",reset:"\x1b[0m"}
+main.vmGlobal.color = Object.assign({},color) //clone of color
+
+
+let doesSave = ()=>!(global.noSave || main.vmGlobal.noSave)
+
 if(!fs.existsSync(file)){
   console.error("that file does not exist: "+file);
   console.error(`
@@ -23,8 +29,14 @@ if(!fs.existsSync(file)){
 
 let ext = path.extname(file)
 if(ext == ".js"){
-  main.fsroot.load({"ljsoned::trusted":true,"ljsoned::onInit":fs.readFileSync(file,'utf8')})
-  file = file+".json"
+  let jsonOf = file.substr(0,file.length-ext.length) +".json"
+  main.fsroot.load({"ljsoned::trusted":true,"ljsoned::function":fs.readFileSync(file,'utf8'),"ljsoned::onInit":"this.exec()"})
+
+  if(fs.existsSync(jsonOf)){
+    main.vmGlobal.noSave = true
+    console.log(`you are overriting a file with it's template!${"\n"}therefore ${color.warn}autosave has been turned off${color.reset}`)
+  }
+  file = jsonOf
 }else if(ext == ".json"){
   main.fsroot.load(JSON.parse(fs.readFileSync(file,'utf8')))
 }else{
@@ -43,12 +55,14 @@ if(ext == ".js"){
       rl.question(question+" ",callbk)
       rl.write(autofill)
   }
+  function save() {
+    fs.writeFileSync(file,JSON.stringify(main.fsroot.save()))
+  }
+  main.vmGlobal.save = save;
 
   function prompt(rtn) {
     if(rtn !== undefined)console.log(rtn);
-    let fgReset = "\x1b[0m"
-    let fgGreen = "\x1b[32m"
-    rl.question(`ljsoned${fgGreen}${main.fileJoin(main.cwd)}${fgReset}> `,ans=>{
+    rl.question(`ljsoned${doesSave() ? "" : ` ${color.warn}(nosave)`} ${color.accent}${main.fileJoin(main.cwd)}${color.reset}> `,ans=>{
       try {
         main.cliDo(ans,prompt)
       } catch (e) {
@@ -62,13 +76,15 @@ if(ext == ".js"){
     })
   }
 
+
   prompt()
 
+
   process.on("exit",m=>{
-    if(global.noSave || main.vmGlobal.noSave){
+    if(!doesSave()){
       console.log("exit (unsaved)");
     }else{
-      fs.writeFileSync(file,JSON.stringify(main.fsroot.save()))
+      save()
       console.log("exit (saved do "+file+")");
     }
 
