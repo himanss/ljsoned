@@ -409,7 +409,7 @@ class FsNode {
     } else {
       return []
     }
-    return newO
+    return newO.filter(v=>v&&v.hasValue)
   }
 }
 
