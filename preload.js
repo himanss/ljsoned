@@ -1,3 +1,9 @@
+let promptHead = global.sysEval ? "#" : ">"
+
+if(global.sysEval){
+  print(`${color.reset}you are running with ${color.warn}sandbox disabled${color.reset}`)
+}
+
 
 charms.noAutosave = show=>autosave ? null : show("warn","nosave")
 charms.add(charms.noAutosave)
@@ -103,8 +109,9 @@ func("resolve-path path",(done,cmd,path)=>{
 })
 
 func("jsh",(done,cmd,path)=>{
+  let promptText = "jsh"+promptHead
   function prompt() {
-    ask("jsh>","",ans=>{
+    ask(promptText,"",ans=>{
       ans = ans.trim()
       if(ans == "exit")return done();
       try {

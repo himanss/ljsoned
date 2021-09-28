@@ -2,6 +2,7 @@ let a = 2 //1 for called "*.js mode", 2 for called with "node *.js mode"
 let argv = process.argv
 let file = argv[a+0]
 
+
 const fs = require('fs');
 const path = require('path');
 const main = require('./mod.js');
@@ -107,13 +108,15 @@ if(ext == ".js"){
   }
   main.vmGlobal.save = save;
 
+	let promptHead = main.vmGlobal.sysEval ? "#" : "$"
+
   function prompt(rtn) {
     if(rtn !== undefined)console.log(rtn);
 		let charms = []
 		charm.fire((colorOf,text)=>{
 			charms.push(" "+(color[colorOf] || color.reset)+"("+text+")")
 		})
-    rl.question(`ljsoned${charms.join("")} ${color.accent}${main.fileJoin(main.cwd)}${color.reset}> `,ans=>{
+    rl.question(`ljsoned${charms.join("")} ${color.accent}${main.fileJoin(main.cwd)}${color.reset}${promptHead} `,ans=>{
       try {
         main.cliDo(ans,prompt)
       } catch (e) {
