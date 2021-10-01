@@ -157,4 +157,6 @@ func("debug",done=>{
   done()
 })
 
+func("load word",(done,cmd,key)=> done(require(key)) )
+
 print("ljsoned v1.0");
