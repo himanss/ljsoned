@@ -6,6 +6,7 @@ let file = argv[a+0]
 const fs = require('fs');
 const path = require('path');
 const main = require('./mod.js');
+const mloader = require("./modloader")
 
 
 //{

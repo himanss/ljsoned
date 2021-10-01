@@ -240,7 +240,7 @@ let VMFunctionFactory = vm.run(`
 })`)
 let VMTrap = vm.run(`(function(io){return io})`)
 exports.VMTrap = VMTrap //vm entrapped value maker
-
+exports.vmFunction = VMFunctionFactory
 
 
 class FsNode extends jfs.FsNode {
