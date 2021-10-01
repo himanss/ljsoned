@@ -79,6 +79,9 @@ if(ext == ".js"){
 
 	let promptHead = main.vmGlobal.sysEval ? "#" : "$"
 
+
+
+
   function prompt(rtn) {
     if(rtn !== undefined)console.log(rtn);
 		let charms = []

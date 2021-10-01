@@ -32,6 +32,12 @@ exports.events = event
 				item(...args)
 			});
 		}
+    fireAndCatch(...args){
+      let rtn = null
+			this.forEach((item, i) => {
+        if(rtn === null || rtn === undefined) rtn = item(...args);
+			});
+		}
 	}
 	function eventPublic(e){
 		if(event[e])return event[e].public;
@@ -107,6 +113,8 @@ exports.pathToValue = str=>{ //words are arguments that have been parsed into a 
   throw new Error("value must be Array or String got: "+typeof str);
 }
 
+let noCommandEvent = new Event("command")
+
 exports.cliDo = (args,callbk)=>{
   let infunc = null
   args = exports.cliSplit(args).map(v=>exports.fileSplit(v))
@@ -117,9 +125,11 @@ exports.cliDo = (args,callbk)=>{
   if(args[0] == "")return callbk();
 
   let cmd = exports.shFuncs[args[0]]
+ if(!cmd) cmd = noCommandEvent.fireAndCatch(args[0])
   if(!cmd){
     throw new Error("command not found")
   }
+
 
   {
     let argmode = cmd[0/*argmode*/]
