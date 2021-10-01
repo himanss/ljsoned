@@ -5,6 +5,41 @@ String.prototype.replaceAll = function (ex,rep) {
   return replaceAll(this,ex,rep)
 };
 
+var event = {}
+exports.events = event
+	class Event extends Set{
+		constructor(name){
+			super();
+			event[name] = this
+			this.public = {
+				addListener:this.addListener.bind(this),
+				removeListener:this.removeListener.bind(this),
+
+				add:this.addListener.bind(this),
+				remove:this.removeListener.bind(this),
+
+				fire:this.fire.bind(this)
+			}
+		}
+		addListener(func){
+			this.add(func)
+		}
+		removeListener(func){
+			this.delete	(func)
+		}
+		fire(...args){
+			this.forEach((item, i) => {
+				item(...args)
+			});
+		}
+	}
+	function eventPublic(e){
+		if(event[e])return event[e].public;
+		else return new Event(e).public;
+	}
+	exports.eventPublic = eventPublic
+exports.Event = Event
+
 exports.cli_split = {
   quotes: ['"'],
   separator: ' ',
@@ -238,5 +273,6 @@ vmGlobal.print = function(...data) {
   console.log(...data);
 }
 vmGlobal.pathToString = path=>exports.fileJoin(path)
+vmGlobal.event = eventPublic
 
 //vmGlobal.ask
