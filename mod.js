@@ -37,6 +37,7 @@ exports.events = event
 			this.forEach((item, i) => {
         if(rtn === null || rtn === undefined) rtn = item(...args);
 			});
+      return rtn;
 		}
 	}
 	function eventPublic(e){
@@ -87,9 +88,7 @@ exports.fileSplit =  str=>{
   return []
   //throw new Error("value must be Array or String got: "+typeof str);
 }
-exports.shFuncs = {
-  "echo":["echo word path word".split(" "),async (...s)=>{exports.say(...s)}]
-}
+exports.shFuncs = {}
 exports.say = function (...args) {
   // body...
   console.log(...args);

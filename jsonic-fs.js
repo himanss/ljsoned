@@ -155,29 +155,31 @@ class FsNode {
             return privateFace.parentId
           },
           get exec(){
-
             if(!privateFace.hasValue)privateFace.load({});
             if(!privateFace.storage)throw new Error("only objects can contain code");
 
             if(privateFace.functionCache)
             return privateFace.functionCache;
 
-            let func = publicFace.storage["function"]
-            if(!func) func = "";
-            func = privateFace.createArbitraryFn("...args",func).bind(this)
+            let func = publicFace.storage["function"] || ""
+            let args = publicFace.storage["functionArgs"] || "...args"
+
+            func = privateFace.createArbitraryFn(args,func,publicFace)
             privateFace.functionCache = func;
             return func;
           },
           set exec(v){
             var entire = v.toString(); // this part may fail!
-            var body = entire;
+            var body = entire,args = "...args";
             if(typeof v == "function")body = entire.substring(entire.indexOf("{") + 1, entire.lastIndexOf("}"));
+            if(typeof v == "function")args = entire.substring(entire.indexOf("(") + 1, entire.indexOf(")"));
 
             if(!privateFace.hasValue)privateFace.load({});
             if(!privateFace.storage)throw new Error("only objects can contain code");
 
-            privateFace.functionCache = privateFace.createArbitraryFn("...args",body).bind(this)
+            privateFace.functionCache = privateFace.createArbitraryFn(args,body,publicFace)
             publicFace.storage["function"] = body
+            publicFace.storage["functionArgs"] = args
 
           }
 
