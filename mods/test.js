@@ -1,5 +1,1 @@
-return function(){
-  print("you tested me!")
-
-
-}
+return ()=> print("you tested me!")
