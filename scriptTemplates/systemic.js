@@ -15,6 +15,57 @@ assertFile("/bin/echo/")
   done()
 }
 
+assertFile("/bin/echo/")
+.exec = (done,cmd,...args)=>{
+  print(...args)
+  done()
+}
+assertFile("/bin/ted/")
+.exec = (done,cmd,file,...args)=>{
+  let f = assertFile(file)
+  let lines = String(f.value).split("\n")
+  let lineI = 0
+  function p(){
+    ask((lineI+1)+">",lines[lineI] || "",ans=>{
+      if(ans[0] == "/"){
+        ans = ans.split(" ")
+        switch (ans[0]) {
+          case "/go":
+            {
+              let gnum = Number(ans[1])
+              if(isNaN(gnum)){
+                print("not a number")
+                return p()
+              }else{
+                lineI = gnum - 1
+                return p()
+              }
+            }
+            break;
+            case "/save":
+              {
+                f.value = lines.join("\n")
+                print("saved")
+                return p()
+              }
+              break;
+              case "/exit":
+              {
+                print("bye")
+                return done()
+              }
+                break;
+          default:
+
+        }
+      }
+      lines[lineI] = ans
+      lineI++
+      p()
+    })
+  }
+  p()
+}
 
 
 let root = file("/")
